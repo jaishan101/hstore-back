@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const authenticate = require('./api/middleware/authenticate');
 
-mongoose.connect('mongodb+srv://'+ process.env.MONGODB_USERNAME +':'+ process.env.MONGODB_PASSWORD +'@cluster0-axd8v.mongodb.net/mystore?retryWrites=true&w=majority', {useNewUrlParser: true});
+mongoose.connect('mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20C', {useNewUrlParser: true,useUnifiedTopology: true});
 
 const adminRoutes = require('./api/routes/admins');
 const categoryRoutes = require('./api/routes/categories');
@@ -15,6 +15,7 @@ const orderRoutes = require('./api/routes/orders');
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({extended:false}))
 
 app.use('/admin', adminRoutes);
 app.use('/category', categoryRoutes);

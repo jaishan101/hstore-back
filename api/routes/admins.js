@@ -6,64 +6,81 @@ const jwt = require('jsonwebtoken');
 
 const Admin = require('../models/admin');
 
-router.get('/', (req, res, next) => {
 
-    Admin.find({})
-    .exec()
-    .then(doc => {
-        res.status(201).json({
-            message: doc
-        });
-    })
-    .catch(er => {
-        res.status(500).json({
-            error: er
-        })
-    });
-
-});
 
 router.post('/signup', (req, res, next) => {
 
-    Admin.find({email: req.body.email})
+    Admin.findOne({email: req.body.email})
     .exec()
-    .then(user => {
-        if(user.length > 0){
-            return res.status(500).json({
-                message: 'Already registered, try another email address'
-            });
-        }else{
+    .then((user)=>{
+        if(user==null){
             bcrypt.hash(req.body.password, 10, function(err, hash) {
-                // Store hash in your password DB.
-                if(err){
-                    return res.status(500).json({
-                        error: err
-                    });
-                }else{
+                if(err) res.status(500).send(err);
+                else{
                     const admin = new Admin({
-                        _id: new mongoose.Types.ObjectId(),
-                        firstName: req.body.firstName,
-                        lastName: req.body.lastName,
-                        email: req.body.email,
-                        password: hash,
-                        createdAt: new Date().toISOString()
-                    });
-                
-                    admin.save()
-                    .then(doc => {
-                        res.status(201).json({
-                            message: 'Admin Registered Successfully'
-                        });
+                        _id : new mongoose.Types.ObjectId(),
+                        firstName : req.body.firstName,
+                        lastName :req.body.lastName,
+                        email:req.body.email,
+                        password:hash,
+                        createdAt:new Date().toISOString()
                     })
-                    .catch(er => {
-                        res.status(500).json({
-                            error: er
-                        });
+
+                    admin.save().then((doc)=>{
+                        res.send({message:"Admin Registered Successfully"})
+                    }).catch((error)=>{
+                        res.status(500).send(error)
                     });
+
                 }
             });
+        }else{
+            res.status(400).send("Admin Already REgistered")
         }
+    }).catch((error)=>{
+        res.status(500).send(error);
     })
+
+    // const admin = new Admin({
+    //     _id: new mongoose.Types.ObjectId(),
+    //                         firstName: req.body.firstName,
+    //                         lastName: req.body.lastName,
+    //                         email: req.body.email,
+    //                         password: req.body.password,
+    //                         createdAt: new Date().toISOString()
+    //                     });
+                    
+    //                     admin.save()
+    //                     .then((doc) => {
+    //                         res.status(201).json({
+    //                             message: 'Admin Registered Successfully'
+    //                         });
+    //                     }).catch((eror)=>{
+    //                         res.status(500).send(eror)
+    //                     })
+
+    // Admin.findOne({email: req.body.email})
+    // .exec()
+    // .then((user)=>{
+    //     console.log(user);
+    //     res.send(user);
+    // }).catch((error)=>{
+    //     res.status(500).send(error);
+    // })
+    // .then(user => {
+    //     console.log(req.body);
+    //     console.log(user)
+    //     if(user.length > 0){
+    //         return res.status(500).json({
+    //             message: 'Already registered, try another email address'
+    //         });
+    //     }else{
+                    
+                    
+    //             }
+    //         });
+    //     }
+    // })
 
     
 
