@@ -3,7 +3,7 @@ const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
 const authenticate = require('./api/middleware/authenticate');
-//sdfd
+//sdfdsas
 mongoose.connect('mongodb://localhost:27017/?readPreference=primary&appname=MongoDB%20C', {useNewUrlParser: true,useUnifiedTopology: true});
 
 const adminRoutes = require('./api/routes/admins');
